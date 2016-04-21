@@ -62,15 +62,15 @@ allprojects {
         archives javadocJar, sourcesJar
     }
 
-    signing {
+    /*signing {
         sign configurations.archives
-    }
+    }*/
 
     javadoc {
         failOnError = false
     }
 
-    uploadArchives {
+    /*uploadArchives {
         repositories {
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
@@ -126,7 +126,7 @@ allprojects {
                 }
             }
         }
-    }
+    }*/
 
 }
 
