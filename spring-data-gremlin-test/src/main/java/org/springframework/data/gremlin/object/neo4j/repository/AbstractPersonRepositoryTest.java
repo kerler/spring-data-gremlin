@@ -400,6 +400,25 @@ public abstract class AbstractPersonRepositoryTest extends BaseRepositoryTest {
         assertEquals(4, locations.size());
     }
 
+    @Test
+    public void testCollectionsCascadeRemoveWithRemovingSpecificElement() {
+        Person graham = repository.findByFirstName("Graham").get(0);
+        assertEquals(5, graham.getLocations().size());
+
+        List<Located> locations = new ArrayList<Located>(graham.getLocations());
+        if(locations.contains(graham.getCurrentLocation())){
+            locations.remove(graham.getCurrentLocation());
+        } else {
+            locations.remove(0);
+        }
+        graham.setLocations(new HashSet<Located>(locations));
+        repository.save(graham);
+
+        graham = repository.findByFirstName("Graham").get(0);
+
+        locations = new ArrayList<Located>(graham.getLocations());
+        assertEquals(4, locations.size());
+    }
 
     @Test
     public void testViaLink() {

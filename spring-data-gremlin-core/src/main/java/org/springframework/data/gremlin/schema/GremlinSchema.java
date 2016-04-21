@@ -191,19 +191,32 @@ public abstract class GremlinSchema<V> {
         }
         noCascadingMap.put(obj, element);
 
+        GremlinProperty tmpPropertyCurrentLocation = null;
         for (GremlinProperty property : getProperties()) {
-
-            try {
-
-                GremlinPropertyAccessor accessor = property.getAccessor();
-                Object val = accessor.get(obj);
-
-                if (val != null) {
-                    property.copyToVertex(graphAdapter, element, val, noCascadingMap);
-                }
-            } catch (RuntimeException e) {
-                LOGGER.warn(String.format("Could not save property %s of %s", property, obj.toString()), e);
+            if (property.getName().equals("currentLocation")) {
+                tmpPropertyCurrentLocation = property;
+                continue;
             }
+
+            copyPropertyToGraph(graphAdapter, element, obj, noCascadingMap, property);
+        }
+
+        if (null != tmpPropertyCurrentLocation) {
+            copyPropertyToGraph(graphAdapter, element, obj, noCascadingMap, tmpPropertyCurrentLocation);
+        }
+    }
+
+    private void copyPropertyToGraph(GremlinGraphAdapter graphAdapter, Element element, Object obj, Map<Object, Element> noCascadingMap, GremlinProperty property) {
+        try {
+
+            GremlinPropertyAccessor accessor = property.getAccessor();
+            Object val = accessor.get(obj);
+
+            if (val != null) {
+                property.copyToVertex(graphAdapter, element, val, noCascadingMap);
+            }
+        } catch (RuntimeException e) {
+            LOGGER.warn(String.format("Could not save property %s of %s", property, obj.toString()), e);
         }
     }
 
